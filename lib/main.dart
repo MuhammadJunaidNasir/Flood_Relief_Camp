@@ -1,5 +1,4 @@
 import 'package:final_year_project/commonuserdashboardscreen.dart';
-import 'package:final_year_project/loginscreen.dart';
 import 'package:final_year_project/splashscreen.dart';
 import 'package:flutter/material.dart';
 
@@ -19,5 +18,5 @@ class MyApp extends StatelessWidget {
       ),
       home: const SplashScreen(),
     );
-  }
+  } 
 }
