@@ -25,9 +25,8 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
               padding: EdgeInsets.only(left: 10, right: 15),
               child: CircleAvatar(
                 radius: 15.5,
-                child: Text(
-                  'JN',
-                  style: TextStyle(fontSize: 13),
+                child: CircleAvatar(
+                     backgroundImage: AssetImage('assets/mypic.jpg'),
                 ),
               ),
             ),
@@ -37,11 +36,7 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
           child: ListView(children: [
             const UserAccountsDrawerHeader(
                 currentAccountPicture: CircleAvatar(
-                  radius: 10.5,
-                  child: Text(
-                    'JN',
-                    style: TextStyle(fontSize: 13),
-                  ),
+                     backgroundImage: AssetImage('assets/mypic.jpg'),
                 ),
                 accountName: Text('Junaid Nasir'),
                 accountEmail: Text('mjn7439@gmail.com'),
