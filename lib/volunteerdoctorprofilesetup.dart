@@ -1,34 +1,30 @@
-import 'dart:io';
-import 'dart:async';
-import 'package:final_year_project/commonuserdashboardscreen.dart';
+import 'package:final_year_project/volunteerdoctordashboardscreen.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-
-class FloodReportingScreen extends StatefulWidget {
-  const FloodReportingScreen({super.key});
+class VDProfileSetupScreen extends StatefulWidget {
+  const VDProfileSetupScreen({Key? key}) : super(key: key);
 
   @override
-  State<FloodReportingScreen> createState() => _FloodReportingScreenState();
+  State<VDProfileSetupScreen> createState() => _VDProfileSetupScreenState();
 }
 
-class _FloodReportingScreenState extends State<FloodReportingScreen> {
+class _VDProfileSetupScreenState extends State<VDProfileSetupScreen> {
   dynamic file;
   void imagePicker() async {
     XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (file != null) {
+    if (image != null) {
       setState(() {
-        file = File(image!.path);
+        file = File(image.path);
       });
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.purple,
-        title: const Text('Flood Reporting'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -36,74 +32,15 @@ class _FloodReportingScreenState extends State<FloodReportingScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(
-              height: 10,
+              height: 50,
             ),
             const Padding(
               padding: EdgeInsets.only(right: 200),
-              child: Text('Add Information',
+              child: Text('Setting up Profile',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
             ),
             const SizedBox(
-              height: 30,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Enter City",
-                  labelText: "City",
-                  prefixIcon: const Icon(Icons.location_city),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Enter PostalCode",
-                  labelText: "Postal Code",
-                  prefixIcon: const Icon(Icons.numbers),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Enter Address",
-                  labelText: "Address",
-                  prefixIcon: const Icon(Icons.location_on_rounded),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: TextFormField(
-                minLines: 2,
-                maxLines: 15,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  hintText: 'Enter Description Here',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 5,
+              height: 50,
             ),
             Row(
               children: [
@@ -116,7 +53,7 @@ class _FloodReportingScreenState extends State<FloodReportingScreen> {
                     },
                   ),
                 ),
-                const Text('Attach a picture'),
+                const Text('Upload Your Picture'),
                 const SizedBox(width: 150,),
 
                 if(file!=null)
@@ -126,10 +63,66 @@ class _FloodReportingScreenState extends State<FloodReportingScreen> {
                     width: 50,
                     fit: BoxFit.fill,
                   ),
+
+
               ],
             ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Enter Your Mobile Number",
+                  labelText: "Mobile Number",
+                  prefixIcon: const Icon(Icons.phone),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Enter Your Address",
+                  labelText: "Address",
+                  prefixIcon: const Icon(Icons.location_on),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Enter Your Role",
+                  labelText: "Role",
+                  prefixIcon: const Icon(Icons.task_alt),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Enter Your Age",
+                  labelText: "Age",
+                  prefixIcon: const Icon(Icons.face),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+
             const SizedBox(
-              height: 15,
+              height: 30,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
@@ -138,12 +131,12 @@ class _FloodReportingScreenState extends State<FloodReportingScreen> {
                   height: 50,
                   width: 300,
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 249, 0, 116),
+                    color: const Color(0xFF7C4DFF),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Center(
-                      child: Text('Upload',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
+                      child: Text('Save',
+                          style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white))),
                 ),
                 onTap: () {
                   showDialog(
@@ -151,26 +144,27 @@ class _FloodReportingScreenState extends State<FloodReportingScreen> {
                       builder: (context) {
                         return Container(
                             child: AlertDialog(
-                          title: const Text('Case Submitted Successfully!'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CommonUserDashboardScreen()));
-                                },
-                                child: const Text('OK')),
-                          ],
-                        ));
+                              title: const Text('Your data has been saved successfully!'),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,MaterialPageRoute(builder: (context) => const VolunteerDoctorDashboardScreen()));
+                                    },
+                                    child: const Text('OK')),
+                              ],
+                            ));
                       });
                 },
               ),
             ),
+
+
           ],
         ),
       ),
     );
+
   }
 }
+

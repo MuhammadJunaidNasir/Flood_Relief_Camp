@@ -1,5 +1,6 @@
 import 'package:final_year_project/donatemoneyscreen.dart';
 import 'package:final_year_project/floodreportingscreen.dart';
+import 'package:final_year_project/floodvisualization.dart';
 import 'package:final_year_project/loginscreen.dart';
 import 'package:final_year_project/recentcasesscreen.dart';
 import 'package:final_year_project/userdonationsscreen.dart';
@@ -45,11 +46,14 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
                 )),
             const ListTile(
               leading: Icon(Icons.person),
-              title: Text('Profile'),
+              title: Text('My Profile',style: TextStyle(fontWeight: FontWeight.bold),),
               //trailing: Icon(Icons.arrow_forward_ios_outlined),
             ),
+            const Divider(
+              thickness: 2,
+            ),
             ListTile(
-              leading: const Icon(Icons.history),
+              leading: const Icon(Icons.attach_money, ),
               title: InkWell(
                 child: const Text('My Donations'),
                 onTap: () {
@@ -64,7 +68,7 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
             ListTile(
               leading: const Icon(Icons.logout),
               title: InkWell(
-                child: const Text('Logout'),
+                child: const Text('Logout',style: TextStyle(color: Colors.red),),
                 onTap: () {
                   Navigator.push(
                       context,
@@ -75,7 +79,12 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
               //trailing: const Icon(Icons.arrow_forward_ios_outlined),
             ),
           ])),
-      body: SingleChildScrollView(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient:  LinearGradient(colors: [Colors.purple,Colors.red,]),
+        ),
+        height: double.infinity,
+        width: double.infinity,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,7 +98,7 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
                     height: 200,
                     width: 360,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
+                      gradient: const LinearGradient(colors: [Colors.red,Colors.yellow]),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Column(
@@ -153,7 +162,7 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
                   height: 100,
                   width: 360,
                   decoration: BoxDecoration(
-                    color: Colors.grey,
+                    gradient: const LinearGradient(colors: [Colors.red,Colors.yellow]),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
@@ -191,7 +200,7 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
               InkWell(
                 child: const Text('Click Here To See Recent Cases',
                     style: TextStyle(
-                        color: Color(0xFFD500F9),
+                        color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline)),
@@ -202,7 +211,36 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
                           builder: (context) => const RecentCasesScreen()));
                 },
               ),
+
+              Padding(
+                padding: const EdgeInsets.only(top: 30.0),
+                child: Container(
+                  height: 100,
+                  width: 360,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(colors: [Colors.red,Colors.yellow]),
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(
+                          child: Text('Google Map View',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 18),),
+                      onTap: (){
+                                  Navigator.push(context, 
+                                  MaterialPageRoute(builder: (context)=> const FloodVisualizationScreen()));
+                      },
+                      ),
+                      Icon(Icons.arrow_forward_ios_sharp,color: Colors.white,),
+                    ],
+                  ),
+                ),
+              ),
+
+
             ]),
+            
       ),
     );
   }

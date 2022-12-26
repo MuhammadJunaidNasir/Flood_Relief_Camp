@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "553969005044",
+    "project_id": "floodreliefcamp-6c259",
+    "storage_bucket": "floodreliefcamp-6c259.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:553969005044:android:75c31dff899903004ec9a1",
+        "android_client_info": {
+          "package_name": "com.example.final_year_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "553969005044-9vla9apr7te75odv8l3kapl1g6rrlber.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLEaqPgnqLUGrmhuXc_IPkAIFDC3nJEtw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "553969005044-9vla9apr7te75odv8l3kapl1g6rrlber.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

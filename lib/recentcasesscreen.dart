@@ -17,24 +17,31 @@ class _RecentCasesScreenState extends State<RecentCasesScreen> {
         title: const Text('Recent Cases'),
         backgroundColor: Colors.purple,
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 15.0),
-        child: ListView.separated(
-            itemBuilder: (context, index) {
-              return  ListTile(
-                leading: const Icon(Icons.warning),
-                title: Text(cities[index]),
-                subtitle: Text('A new case has been reported in '+cities[index]+' region. Click to see details...'),
-                trailing:  Text(date[index]),
-              );
-            },
-            separatorBuilder: (context, index) {
-              return const Divider(
-                thickness: 1,
-                color: Colors.purple,
-              );
-            },
-            itemCount: cities.length),
+      body: Container(
+         decoration: const BoxDecoration(
+              gradient:  LinearGradient(colors: [Colors.purple,Colors.red,]),
+            ),
+            height: double.infinity,
+            width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: ListView.separated(
+              itemBuilder: (context, index) {
+                return  ListTile(
+                  leading: const Icon(Icons.warning),
+                  title: Text(cities[index]),
+                  subtitle: Text('A new case has been reported in '+cities[index]+' region. Click to see details...'),
+                  trailing:  Text(date[index]),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const Divider(
+                  thickness: 1,
+                  color: Colors.purple,
+                );
+              },
+              itemCount: cities.length),
+        ),
       ),
     );
   }

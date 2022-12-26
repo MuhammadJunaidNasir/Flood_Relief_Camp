@@ -1,6 +1,7 @@
 import 'package:final_year_project/commonuserdashboardscreen.dart';
 import 'package:final_year_project/donategoodsscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DonateMoneyScreen extends StatefulWidget {
   const DonateMoneyScreen({super.key});
@@ -147,7 +148,7 @@ class _DonateMoneyScreenState extends State<DonateMoneyScreen> {
                                 ),
                                 child: Row(children:  [
                                   const Text('   Expiry Date:   '),
-                                  expiry_date==null? const Text('Pick Expiry Date'):Text(expiry_date.toString()),
+                                  expiry_date==null? const Text('Pick a Date'):Text(expiry_date.toString()),
                                 ]),
                               ),
                               onTap: ()async{
@@ -158,7 +159,7 @@ class _DonateMoneyScreenState extends State<DonateMoneyScreen> {
                                       lastDate: DateTime(2030),
                                       );
                                       setState(() {
-                                        
+
                                       });
                               },
                             ),
