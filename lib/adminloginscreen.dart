@@ -10,8 +10,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-
 class AdminLoginScreen extends StatefulWidget {
   const AdminLoginScreen({super.key});
   @override
@@ -83,7 +81,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                               return "Email cannot be empty";
                             }
                             if (!RegExp(
-                                "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                    "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
                                 .hasMatch(value)) {
                               return ("Please enter a valid email");
                             } else {
@@ -143,14 +141,13 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                           },
                           keyboardType: TextInputType.emailAddress,
                         ),
-
                         SizedBox(
                           height: 20,
                         ),
                         MaterialButton(
                           shape: RoundedRectangleBorder(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(20.0))),
+                                  BorderRadius.all(Radius.circular(20.0))),
                           elevation: 5.0,
                           height: 40,
                           onPressed: () {
@@ -164,6 +161,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                             "Login",
                             style: TextStyle(
                               fontSize: 20,
+                              color: Colors.black,
                             ),
                           ),
                           color: Colors.white,
@@ -178,30 +176,33 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                             visible: visible,
                             child: Container(
                                 child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                            )
-                        ),
+                              color: Colors.white,
+                            ))),
                         Padding(
                           padding: const EdgeInsets.only(right: 250.0),
                           child: InkWell(
-                            child: Text('Forgot Password?',style: TextStyle(color: Colors.white,decoration: TextDecoration.underline,fontWeight: FontWeight.bold),),
-                            onTap: (){
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context)=> const ForgetPwdScreen()));
+                            child: Text(
+                              'Forgot Password?',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ForgetPwdScreen()));
                             },
                           ),
                         ),
-
-
-
                       ],
                     ),
                   ),
                 ),
               ),
             ),
-
             Container(
               color: Colors.white,
               width: MediaQuery.of(context).size.width,
@@ -210,18 +211,25 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-
                     Padding(
-                      padding: const EdgeInsets.only(top: 55.0,left: 200),
+                      padding: const EdgeInsets.only(top: 55.0, left: 200),
                       child: InkWell(
-                        child: Text('Other Users Access',style: TextStyle(color: Colors.deepPurple,fontWeight: FontWeight.bold,fontSize: 18,decoration: TextDecoration.underline),),
-                        onTap: (){
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context)=> LoginScreen()));
+                        child: Text(
+                          'Other Users Access',
+                          style: TextStyle(
+                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              decoration: TextDecoration.underline),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()));
                         },
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -244,12 +252,10 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) =>  AdminDashboardScreen(),
+              builder: (context) => AdminDashboardScreen(),
             ),
           );
         }
-
-
       } else {
         print('Document does not exist on the database');
       }
@@ -260,7 +266,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     if (_formkey.currentState!.validate()) {
       try {
         UserCredential userCredential =
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
