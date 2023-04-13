@@ -2,6 +2,7 @@ import 'package:final_year_project/Utilities/utilis.dart';
 import 'package:final_year_project/adminloginscreen.dart';
 import 'package:final_year_project/commonuserdashboardscreen.dart';
 import 'package:final_year_project/forgetpwd.dart';
+import 'package:final_year_project/notification_services.dart';
 import 'package:final_year_project/signupscreen.dart';
 import 'package:final_year_project/volunteerdoctordashboardscreen.dart';
 import 'package:final_year_project/volunteerworkerdashboardscreen.dart';
@@ -25,6 +26,27 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = new TextEditingController();
 
   final _auth = FirebaseAuth.instance;
+
+
+   NotificationServices notificationServices= NotificationServices();
+
+   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    notificationServices.requestNotificationPermission();
+    notificationServices.FirebaseInit();
+    notificationServices.isTokenRefresh();
+    notificationServices.getDeviceToken().then((value){
+      print('Device Token:');
+      print(value);
+    });
+  }
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             signIn(
                                 emailController.text, passwordController.text);
                           },
-                          child: Text(
+                          child:  Text(
                             "Login",
                             style: TextStyle(
                               fontSize: 20,
@@ -167,6 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           color: Colors.white,
                         ),
+
                         SizedBox(
                           height: 10,
                         ),

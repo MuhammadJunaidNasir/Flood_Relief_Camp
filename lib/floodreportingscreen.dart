@@ -1,176 +1,232 @@
 import 'dart:io';
-import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:final_year_project/Utilities/utilis.dart';
 import 'package:final_year_project/commonuserdashboardscreen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class FloodReportingScreen extends StatefulWidget {
-  const FloodReportingScreen({super.key});
-
   @override
-  State<FloodReportingScreen> createState() => _FloodReportingScreenState();
+  _FloodReportingScreenState createState() => _FloodReportingScreenState();
 }
 
 class _FloodReportingScreenState extends State<FloodReportingScreen> {
-  dynamic file;
-  void imagePicker() async {
-    XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (file != null) {
-      setState(() {
-        file = File(image!.path);
-      });
-    }
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
+  CollectionReference casesRef = FirebaseFirestore.instance.collection('cases');
+
+  String cityName = '';
+  String districtName = '';
+  String provinceName = '';
+  String description = '';
+  String locationImgURL='';
+
+  bool loading=false;
+
+
+  firebase_storage.FirebaseStorage storage= firebase_storage.FirebaseStorage.instance;
+
+  File? _image;
+  final picker= ImagePicker();
+
+  Future getImage()async{
+    final pickedFile= await picker.pickImage(source: ImageSource.gallery,imageQuality: 80);
+    setState(() {
+      if(pickedFile!=null){
+        _image=File(pickedFile.path);
+      }
+
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.purple,
-        title: const Text('Flood Reporting'),
+        title: const Text('Report Case Here'),
+        backgroundColor: Colors.deepPurple,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 10,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(right: 200),
-              child: Text('Add Information',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25)),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: TextFormField(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
                 decoration: InputDecoration(
-                  hintText: "Enter City",
-                  labelText: "City",
-                  prefixIcon: const Icon(Icons.location_city),
+                  labelText: 'Enter City Name',
+                  prefixIcon: Icon(Icons.location_city),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                    borderRadius: BorderRadius.circular(15),
+                  )
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Enter PostalCode",
-                  labelText: "Postal Code",
-                  prefixIcon: const Icon(Icons.numbers),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: "Enter Address",
-                  labelText: "Address",
-                  prefixIcon: const Icon(Icons.location_on_rounded),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: TextFormField(
-                minLines: 2,
-                maxLines: 15,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  hintText: 'Enter Description Here',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20.0),
-                  child: InkWell(
-                    child: const Icon(Icons.attach_file),
-                    onTap: () {
-                      imagePicker();
-                    },
-                  ),
-                ),
-                const Text('Attach a picture'),
-                const SizedBox(width: 150,),
-
-                if(file!=null)
-                  Image.file(
-                    file,
-                    height: 50,
-                    width: 50,
-                    fit: BoxFit.fill,
-                  ),
-              ],
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
-              child: InkWell(
-                child: Container(
-                  height: 50,
-                  width: 300,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 249, 0, 116),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                      child: Text('Upload',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                ),
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Container(
-                            child: AlertDialog(
-                          title: const Text('Case Submitted Successfully!'),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CommonUserDashboardScreen()));
-                                },
-                                child: const Text('OK')),
-                          ],
-                        ));
-                      });
+                onChanged: (value) {
+                  setState(() {
+                    cityName = value;
+                  });
                 },
               ),
-            ),
-          ],
+
+              const SizedBox(height: 10,),
+
+              TextField(
+                decoration: InputDecoration(
+                    labelText: 'Enter District Name',
+                    prefixIcon: Icon(Icons.location_city),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    districtName = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 10,),
+              TextField(
+                decoration: InputDecoration(
+                    labelText: 'Enter Province Name',
+                    prefixIcon: Icon(Icons.location_city),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    provinceName = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 15,),
+              TextField(
+                maxLines: 8,
+                decoration: InputDecoration(
+                    labelText: '                 Write Description Here',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    )
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    description = value;
+                  });
+                },
+              ),
+
+              const SizedBox(height: 10.0),
+
+              Container(
+                height: 100,
+                width: 150,
+                decoration: BoxDecoration(
+                  //color: Colors.grey,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: _image!=null? Image.file(_image!.absolute) : const Center(child: Text('No Image Selected'),),
+              ),
+
+              const SizedBox(height: 5.0),
+
+              InkWell(
+                child: Container(
+                  height: 50,
+                  width: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.brown,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Center(
+                    child: Text('Select Image',style: TextStyle(color: Colors.white),),
+                  ),
+                ),
+                onTap: (){
+                  getImage();
+                },
+              ),
+
+              const SizedBox(height: 10.0),
+
+              ElevatedButton(
+                onPressed: () {
+
+                  if(cityName.isEmpty){
+                    Utilis().toastMessage('Add all Details First');
+                  }
+                  else if(districtName.isEmpty){
+                    Utilis().toastMessage('Add all Details First');
+                  }
+                  else if(provinceName.isEmpty){
+                    Utilis().toastMessage('Add all Details First');
+                  }
+                  else if(description.isEmpty){
+                    Utilis().toastMessage('Add all Details First');
+                  }
+                  else if(cityName.isEmpty && districtName.isEmpty && provinceName.isEmpty && description.isEmpty ){
+                    Utilis().toastMessage('Add all Details First');
+                  }
+                  else{
+                    uploadImage();
+                    Utilis().toastMessage('Case has been reported Successfully!');
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context)=> const CommonUserDashboardScreen()));
+                  }
+
+
+               },
+                child: const Text('Report Case',style: TextStyle(fontWeight: FontWeight.bold),),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
+
+
+  /* addNewCase(String cityName, String districtName,String provinceName, String description,String imgURL) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    CollectionReference ref = FirebaseFirestore.instance.collection('cases');
+    ref.doc().set({
+      'cityName': cityName,
+      'districtName': districtName,
+      'provinceName': provinceName,
+      'description': description,
+      //'locationImgURL': imgURL ,
+    });
+
+  }
+  */
+
+
+
+  Future uploadImage()async{
+
+    DateTime dateTime= DateTime.now();
+
+    firebase_storage.Reference ref= firebase_storage.FirebaseStorage.instance.ref('${dateTime}');
+    firebase_storage.UploadTask uploadTask= ref.putFile(_image!.absolute);
+
+    await Future.value(uploadTask);
+    var newURL= await ref.getDownloadURL();
+
+
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    CollectionReference _ref = FirebaseFirestore.instance.collection('cases');
+    _ref.doc().set({
+      'cityName': cityName,
+      'districtName': districtName,
+      'provinceName': provinceName,
+      'description': description,
+      'locationImgURL': newURL ,
+    });
+
+  }
+
 }

@@ -1,349 +1,142 @@
-import 'package:final_year_project/commonuserdashboardscreen.dart';
-import 'package:final_year_project/donategoodsscreen.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+// ignore_for_file: prefer_interpolation_to_compose_strings, avoid_print, library_private_types_in_public_api
 
-class DonateMoneyScreen extends StatefulWidget {
-  const DonateMoneyScreen({super.key});
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_stripe/flutter_stripe.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<DonateMoneyScreen> createState() => _DonateMoneyScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _DonateMoneyScreenState extends State<DonateMoneyScreen> {
-  String paymentMethod = 'debit_card';
-
-  DateTime? expiry_date;
+class _HomeScreenState extends State<HomeScreen> {
+  Map<String, dynamic>? paymentIntentData;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.purple,
       appBar: AppBar(
-        backgroundColor: Colors.purple,
+        title: const Text('Donate Money'),
+        centerTitle: true,
+        backgroundColor: Colors.deepPurple,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(
-                height: 50,
+      body: Center(
+        child: InkWell(
+          onTap: () async {
+             final paymentMethod = await Stripe.instance.createPaymentMethod(
+                 params: const PaymentMethodParams.card(
+                     paymentMethodData: PaymentMethodData()));
+            await makePayment();
+          },
+          child: Container(
+            height: 50,
+            width: 200,
+            decoration: BoxDecoration(
+              color: Colors.green,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: const Center(
+              child: Text(
+                'Donate Now',
+                style: TextStyle(color: Colors.white, fontSize: 20),
               ),
-              Row(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    child: Text('Donate Money ',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                            color: Colors.white)),
-                  ),
-                  const Text('| ',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: Colors.white)),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: InkWell(
-                      child: const Text('Donate Goods ',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                              color: Colors.white)),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const DonateGoodsScreen()));
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Padding(
-                padding: EdgeInsets.only(right: 280),
-                child: Text('Pay With:',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: Colors.white)),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Radio(
-                    value: 'debit_card',
-                    groupValue: paymentMethod,
-                    onChanged: (value) {
-                      setState(() {
-                        paymentMethod = 'debit_card';
-                      });
-                    },
-                  ),
-                  const Text('Debit Card',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.white)),
-                  Radio(
-                    value: 'bank',
-                    groupValue: paymentMethod,
-                    onChanged: (value) {
-                      setState(() {
-                        paymentMethod = 'bank';
-                      });
-                    },
-                  ),
-                  const Text('Bank',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.white)),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              paymentMethod == 'debit_card'
-                  ? Container(
-                      height: 520,
-                      width: 350,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                hintText: "4702 010 932 432",
-                                labelText: "Card Number",
-                                prefixIcon: const Icon(Icons.numbers_sharp),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: InkWell(
-                              child: Container(
-                                height: 60,
-                                width: 310,
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(children:  [
-                                  const Text('   Expiry Date:   '),
-                                  expiry_date==null? const Text('Pick a Date'):Text(expiry_date.toString()),
-                                ]),
-                              ),
-                              onTap: ()async{
-                                 expiry_date= await showDatePicker(
-                                      context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime(1990),
-                                      lastDate: DateTime(2030),
-                                      );
-                                      setState(() {
-
-                                      });
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                hintText: "550",
-                                labelText: "CVV Number",
-                                prefixIcon: const Icon(Icons.numbers),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: TextFormField(
-                              keyboardType: TextInputType.datetime,
-                              decoration: InputDecoration(
-                                hintText: "10000",
-                                labelText: "Amount",
-                                prefixIcon:
-                                    const Icon(Icons.attach_money_outlined),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30, right: 30),
-                            child: Container(
-                              height: 50,
-                              width: 300,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFD500F9),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Center(
-                                  child: InkWell(
-                                child: const Text('PAY',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return Container(
-                                            child: AlertDialog(
-                                          title: const Text(
-                                              'Transaction has been done successfully!'),
-                                          actions: [
-                                            TextButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const CommonUserDashboardScreen()));
-                                                },
-                                                child: const Text('OK')),
-                                          ],
-                                        ));
-                                      });
-                                },
-                              )),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Container(
-                      height: 520,
-                      width: 350,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 8.0, top: 10),
-                            child: Text(
-                              'Bank Name:',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 125.0),
-                            child: Text('Meezan Bank'),
-                          ),
-                          const SizedBox(height: 30),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 8.0, top: 10),
-                            child: Text(
-                              'Account Number:',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 125.0),
-                            child: Text('4702-010-6538694'),
-                          ),
-                          const SizedBox(height: 30),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 8.0, top: 10),
-                            child: Text(
-                              'Account Title:',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 125.0),
-                            child: Text('Muhammad Junaid Nasir'),
-                          ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30, right: 30),
-                            child: Container(
-                              height: 50,
-                              width: 300,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFD500F9),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Center(
-                                  child: InkWell(
-                                child: const Text('DONE',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return Container(
-                                            child: AlertDialog(
-                                          title: const Text(
-                                              'Thank You for your contribution!'),
-                                          actions: [
-                                            TextButton(
-                                                onPressed: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const CommonUserDashboardScreen()));
-                                                },
-                                                child: const Text('OK')),
-                                          ],
-                                        ));
-                                      });
-                                },
-                              )),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-            ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Future<void> makePayment() async {
+    try {
+      paymentIntentData =
+      await createPaymentIntent('20', 'USD'); //json.decode(response.body);
+      // print('Response body==>${response.body.toString()}');
+      await Stripe.instance
+          .initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+              setupIntentClientSecret: 'sk_test_51Mn562FT4JdnQJIk9EG0Yemvxo6E0z5Mzs7hFkHwu8doDzJjyYh7F4G2w3dJSZtfUoUYHgRRYYG9mkuWhvu3UJf700akKKLSKn',
+              paymentIntentClientSecret:
+              paymentIntentData!['client_secret'],
+              //applePay: PaymentSheetApplePay.,
+              //googlePay: true,
+              //testEnv: true,
+              customFlow: true,
+              style: ThemeMode.dark,
+              // merchantCountryCode: 'US',
+              merchantDisplayName: 'Flood Relief Camp'))
+          .then((value) {});
+
+      ///now finally display payment sheeet
+      displayPaymentSheet();
+    } catch (e, s) {
+      print('Payment exception:$e$s');
+    }
+  }
+
+  displayPaymentSheet() async {
+    try {
+      await Stripe.instance
+          .presentPaymentSheet(
+        //       parameters: PresentPaymentSheetParameters(
+        // clientSecret: paymentIntentData!['client_secret'],
+        // confirmPayment: true,
+        // )
+      )
+          .then((newValue) {
+        print('payment intent' + paymentIntentData!['id'].toString());
+        print(
+            'payment intent' + paymentIntentData!['client_secret'].toString());
+        print('payment intent' + paymentIntentData!['amount'].toString());
+        print('payment intent' + paymentIntentData.toString());
+        //orderPlaceApi(paymentIntentData!['id'].toString());
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Donated Successfully!")));
+
+        paymentIntentData = null;
+      }).onError((error, stackTrace) {
+        print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
+      });
+    } on StripeException catch (e) {
+      print('Exception/DISPLAYPAYMENTSHEET==> $e');
+      showDialog(
+          context: context,
+          builder: (_) => const AlertDialog(
+            content: Text("Cancelled "),
+          ));
+    } catch (e) {
+      print('$e');
+    }
+  }
+
+  //  Future<Map<String, dynamic>>
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': calculateAmount('20'),
+        'currency': currency,
+        'payment_method_types[]': 'card',
+      };
+      print(body);
+      var response = await http.post(
+          Uri.parse('https://api.stripe.com/v1/payment_intents'),
+          body: body,
+          headers: {
+            'Authorization': 'Bearer ' + 'pk_test_51Mn562FT4JdnQJIkoT2q91T7npTKx78byYr7V0em8mc5C0MMH2M03RrzHzxiKiS82Zb8SOxC9WIBEHoCoM69slmw00KkJF20sV',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          });
+      print('Create Intent reponse ===> ${response.body.toString()}');
+      return jsonDecode(response.body);
+    } catch (err) {
+      print('err charging user: ${err.toString()}');
+    }
+  }
+
+  calculateAmount(String amount) {
+    final a = (int.parse(amount)) * 100;
+    return a.toString();
   }
 }

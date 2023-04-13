@@ -20,8 +20,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final _auth = FirebaseAuth.instance;
 
   final TextEditingController passwordController = new TextEditingController();
-  final TextEditingController confirmpassController =
-  new TextEditingController();
+  final TextEditingController confirmpassController = new TextEditingController();
   final TextEditingController name = new TextEditingController();
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController mobile = new TextEditingController();
@@ -318,7 +317,16 @@ class _SignupScreenState extends State<SignupScreen> {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     var user = _auth.currentUser;
     CollectionReference ref = FirebaseFirestore.instance.collection('users');
-    ref.doc(user!.uid).set({'email': emailController.text, 'rool': rool});
+    ref.doc(user!.uid).set({
+      'email': emailController.text,
+      'rool': rool,
+      'phoneNo': '',
+      'address': '',
+      'age': '',
+      'name': '',
+      'imageURL':'',
+    }
+    );
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }

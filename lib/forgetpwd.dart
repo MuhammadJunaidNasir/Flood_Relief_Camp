@@ -96,7 +96,7 @@ class _ForgetPwdScreenState extends State<ForgetPwdScreen> {
                             });
                             _auth.sendPasswordResetEmail(
                                 email: emailController.text.toString()).then((value){
-                              Utilis().toastMessage('An Email has been sent to you to revover your password. Please check your email');
+                              Utilis().toastMessage('An Email has been sent to you to change your password. Please check your email');
                               Navigator.push(context,
                               MaterialPageRoute(builder: (context)=>const LoginScreen()));
                               setState(() {

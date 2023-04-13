@@ -2,9 +2,15 @@ import 'package:final_year_project/donatemoneyscreen.dart';
 import 'package:final_year_project/floodreportingscreen.dart';
 import 'package:final_year_project/floodvisualization.dart';
 import 'package:final_year_project/loginscreen.dart';
+import 'package:final_year_project/mytasksscreen.dart';
 import 'package:final_year_project/recentcasesscreen.dart';
 import 'package:final_year_project/userdonationsscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart';
+import 'package:final_year_project/chatscreen.dart';
+import 'package:final_year_project/myprofile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CommonUserDashboardScreen extends StatefulWidget {
   const CommonUserDashboardScreen({super.key});
@@ -16,18 +22,67 @@ class CommonUserDashboardScreen extends StatefulWidget {
 
 class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
   @override
+
+  final auth= FirebaseAuth.instance;
+
+  String _email = '';
+  String _phoneNo='';
+  String _role='';
+  String _address='';
+  String _profession='';
+  String _name='';
+  String _imageURL='';
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUserData();
+  }
+
+  Future<void> getCurrentUserData() async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get();
+
+    setState(() {
+      _email = snapshot['email'];
+      _phoneNo = snapshot['phoneNo'];
+      _role = snapshot['rool'];
+      _address = snapshot['address'];
+      _profession = snapshot['profession'];
+      _name = snapshot['name'];
+      _imageURL=snapshot['imageURL'];
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.purple,
-          title: const Text('imRelief'),
-          actions: const [
+          title: const Text('Logged in as Common User',style: TextStyle(fontSize: 14),),
+          actions: [
             Padding(
+              padding: const EdgeInsets.only(top: 9, left: 10, right: 18),
+              child: InkWell(
+                child: const Icon(Icons.chat),
+                onTap: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>  const ChatScreen()));
+                },
+              ),
+            ),
+             Padding(
               padding: EdgeInsets.only(left: 10, right: 15),
               child: CircleAvatar(
-                radius: 15.5,
+                radius: 23.5,
                 child: CircleAvatar(
-                     backgroundImage: AssetImage('assets/mypic.jpg'),
+                     backgroundImage: NetworkImage(_imageURL)
                 ),
               ),
             ),
@@ -35,19 +90,27 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
       drawer: Drawer(
           backgroundColor: Colors.white,
           child: ListView(children: [
-            const UserAccountsDrawerHeader(
-                currentAccountPicture: CircleAvatar(
-                     backgroundImage: AssetImage('assets/mypic.jpg'),
+             UserAccountsDrawerHeader(
+                currentAccountPicture:  CircleAvatar(
+                     backgroundImage: NetworkImage(_imageURL)
                 ),
-                accountName: Text('Junaid Nasir'),
-                accountEmail: Text('mjn7439@gmail.com'),
-                decoration: BoxDecoration(
+                accountName: Text('$_name',style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                accountEmail: Text('$_email',style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                decoration: const BoxDecoration(
                   color: Colors.purple,
                 )),
-            const ListTile(
-              leading: Icon(Icons.person),
-              title: Text('My Profile',style: TextStyle(fontWeight: FontWeight.bold),),
-              //trailing: Icon(Icons.arrow_forward_ios_outlined),
+            InkWell(
+              child: const ListTile(
+                leading: Icon(Icons.person),
+                title: Text(
+                  'My Profile',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              onTap: (){
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) =>  MyProfile()));
+              },
             ),
             const Divider(
               thickness: 2,
@@ -63,21 +126,31 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
                           builder: (context) => const UserDonationsScreen()));
                 },
               ),
-              //trailing: Icon(Icons.arrow_forward_ios_outlined),
+
             ),
+
+            ListTile(
+              leading: const Icon(Icons.task),
+              title: InkWell(
+                child: const Text('My Tasks'),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const MyTasksScreen()));
+                },
+              ),
+            ),
+
             ListTile(
               leading: const Icon(Icons.logout),
               title: InkWell(
                 child: const Text('Logout',style: TextStyle(color: Colors.red),),
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()));
+                  auth.signOut().then((value) =>
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()))
+                  );
                 },
               ),
-              //trailing: const Icon(Icons.arrow_forward_ios_outlined),
             ),
+
           ])),
       body: Container(
         decoration: const BoxDecoration(
@@ -148,7 +221,7 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const FloodReportingScreen()));
+                                            FloodReportingScreen()));
                             },
                           ),
                         ),
@@ -188,7 +261,7 @@ class _CommonUserDashboardScreenState extends State<CommonUserDashboardScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const DonateMoneyScreen()));
+                                        const HomeScreen()));
                           },
                         ),
                       ],
